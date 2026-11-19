@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<html lang="ru" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>НЕЙРОКАДР — Студийная фотосессия из твоих обычных селфи за 24 часа</title>
+
+    <!-- Шрифты Manrope и Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Конфигурация палитры и шрифтов -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        display: ['Manrope', 'sans-serif'],
+                    },
+                    colors: {
+                        obsidian: '#09090B',
+                        surface: '#131317',
+                        surfaceLight: '#1C1C23',
+                        gold: '#F59E0B',
+                        violetGlow: '#7C3AED',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            background-color: #09090B;
+            color: #F8FAFC;
+            overflow-x: hidden;
+        }
+        .no-select {
+            user-select: none;
+            -webkit-user-select: none;
+        }
+        .hero-glow {
+            background: radial-gradient(circle at 18% 12%, rgba(245, 158, 11, 0.14) 0%, transparent 45%),
+                        radial-gradient(circle at 82% 28%, rgba(124, 58, 237, 0.14) 0%, transparent 45%);
+        }
+    </style>
+</head>
+<body class="font-sans antialiased bg-obsidian text-slate-100 selection:bg-amber-500/30 selection:text-amber-200">
+
+    <!-- ==================== УВЕДОМЛЕНИЕ (TOAST) ==================== -->
+    <div id="toast" class="fixed bottom-6 right-6 z-50 transform translate-y-24 opacity-0 transition-all duration-300 pointer-events-none">
+        <div class="flex items-center gap-3 bg-surfaceLight border border-amber-500/40 text-white px-5 py-3.5 rounded-2xl shadow-2xl shadow-black/60 backdrop-blur-md">
+            <span class="flex h-6 w-6 items-center justify-center rounded-full bg-amber-500/20 text-amber-400">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+            </span>
+            <span id="toast-message" class="text-sm font-semibold">Скопировано!</span>
+        </div>
+    </div>
+
+    <!-- ==================== 1. ШАПКА (HEADER) ==================== -->
+    <header class="sticky top-0 z-40 w-full bg-obsidian/85 backdrop-blur-xl border-b border-white/10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16 sm:h-20">
+                <!-- Логотип -->
+                <a href="#" class="flex items-center gap-2.5 group">
+                    <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center shadow-lg shadow-amber-500/20 group-hover:scale-105 transition-transform">
+                        <svg class="w-5 h-5 text-obsidian" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"/>
+                        </svg>
+                    </div>
+                    <span class="font-display font-extrabold text-lg sm:text-xl tracking-wider text-white">НЕЙРО<span class="text-amber-400">КАДР</span></span>
+                </a>
+
+                <!-- Навигация (Десктоп) -->
+                <nav class="hidden md:flex items-center gap-8 text-sm font-medium text-slate-300">
+                    <a href="#examples" class="hover:text-white transition-colors">Примеры</a>
+                    <a href="#styles" class="hover:text-white transition-colors">Стили</a>
+                    <a href="#pricing" class="hover:text-white transition-colors">Тарифы</a>
+                    <a href="#faq" class="hover:text-white transition-colors">FAQ</a>
+                </nav>
+
+                <!-- Кнопка «Написать в ВК» и мобильное меню -->
+                <div class="flex items-center gap-3">
+                    <a href="https://vk.ru/vipbulich" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 px-4 py-2.5 sm:px-5 rounded-xl bg-amber-500 hover:bg-amber-400 text-obsidian font-bold text-sm transition-all shadow-lg shadow-amber-500/20 active:scale-95">
+                        <span>Написать в ВК</span>
+                        <svg class="w-4 h-4 hidden sm:block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+                    </a>
+                    <button id="mobile-menu-btn" type="button" aria-label="Открыть меню" class="md:hidden p-2.5 rounded-xl bg-surface border border-white/10 text-slate-300 hover:text-white">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Выпадающее мобильное меню -->
+        <div id="mobile-menu" class="hidden md:hidden bg-surface border-b border-white/10 px-4 pt-2 pb-5 space-y-1">
+            <a href="#examples" class="mobile-nav-link block px-3 py-3 rounded-xl text-base font-medium text-slate-200 hover:bg-white/5">Примеры До/После</a>
+            <a href="#styles" class="mobile-nav-link block px-3 py-3 rounded-xl text-base font-medium text-slate-200 hover:bg-white/5">Стили</a>
+            <a href="#pricing" class="mobile-nav-link block px-3 py-3 rounded-xl text-base font-medium text-slate-200 hover:bg-white/5">Тарифы</a>
+            <a href="#faq" class="mobile-nav-link block px-3 py-3 rounded-xl text-base font-medium text-slate-200 hover:bg-white/5">FAQ</a>
+        </div>
+    </header>
+
+    <!-- ==================== 2. ПЕРВЫЙ ЭКРАН (HERO) ==================== -->
+    <section class="relative pt-14 pb-16 sm:pt-24 sm:pb-24 hero-glow overflow-hidden">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="max-w-3xl mx-auto text-center">
+                <!-- Бейдж -->
+                <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-surface/90 border border-amber-500/30 text-amber-300 text-xs sm:text-sm font-semibold mb-6 sm:mb-8 backdrop-blur-md">
+                    <span class="w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span>
+                    Премиум-нейрофотосессии • 100% сходство лица
+                </div>
+
+                <!-- Главный заголовок -->
+                <h1 class="font-display font-extrabold text-3xl sm:text-5xl lg:text-6xl tracking-tight text-white leading-[1.12] mb-6">
+                    Студийная фотосессия из твоих обычных селфи <span class="text-transparent bg-clip-text bg-gradient-to-r from-amber-300 via-amber-400 to-orange-500">за 24 часа</span>
+                </h1>
+
+                <!-- Подзаголовок -->
+                <p class="text-base sm:text-lg lg:text-xl text-slate-300/90 leading-relaxed max-w-2xl mx-auto mb-10">
+                    100% портретное сходство без фотографа, аренды студии и визажиста. Просто скинь обычные фото с телефона — и получи кадры журнального уровня для аватарки, соцсетей или бизнеса.
+                </p>
+
+                <!-- Две кнопки -->
+                <div class="flex flex-col sm:flex-row items-center justify-center gap-4 mb-14">
+                    <a href="https://vk.ru/vipbulich" target="_blank" rel="noopener noreferrer" class="w-full sm:w-auto px-8 py-4 rounded-2xl bg-gradient-to-r from-amber-500 to-amber-400 hover:from-amber-400 hover:to-amber-300 text-obsidian font-extrabold text-base transition-all shadow-xl shadow-amber-500/20 hover:shadow-amber-500/35 active:scale-95">
+                        Заказать в ВК
+                    </a>
+                    <a href="#pricing" class="w-full sm:w-auto px-8 py-4 rounded-2xl bg-surface hover:bg-surfaceLight border border-white/15 text-white font-semibold text-base transition-all flex items-center justify-center gap-2">
+                        <span>Смотреть тарифы</span>
+                        <svg class="w-4 h-4 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                    </a>
+                </div>
+            </div>
+
+            <!-- 3 преимущества -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-4xl mx-auto">
+                <div class="flex items-center gap-4 p-5 rounded-2xl bg-surface/80 border border-white/10 backdrop-blur-md">
+                    <div class="w-11 h-11 shrink-0 rounded-xl bg-amber-500/15 border border-amber-500/25 flex items-center justify-center text-amber-400">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                    </div>
+                    <div>
+                        <div class="font-display font-bold text-white text-base">Реальное сходство</div>
+                        <div class="text-xs text-slate-400">Обучаем ИИ-модель лично под тебя</div>
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-4 p-5 rounded-2xl bg-surface/80 border border-white/10 backdrop-blur-md">
+                    <div class="w-11 h-11 shrink-0 rounded-xl bg-violet-500/15 border border-violet-500/25 flex items-center justify-center text-violet-400">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                    </div>
+                    <div>
+                        <div class="font-display font-bold text-white text-base">Готово за 24 часа</div>
+                        <div class="text-xs text-slate-400">Без сборов, пробок и ожидания</div>
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-4 p-5 rounded-2xl bg-surface/80 border border-white/10 backdrop-blur-md">
+                    <div class="w-11 h-11 shrink-0 rounded-xl bg-amber-500/15 border border-amber-500/25 flex items-center justify-center text-amber-400">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                    </div>
+                    <div>
+                        <div class="font-display font-bold text-white text-base">От 500 ₽ за старт</div>
+                        <div class="text-xs text-slate-400">В 15 раз выгоднее обычной съемки</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== 3. ИНТЕРАКТИВНЫЙ БЛОК «ДО / ПОСЛЕ» ==================== -->
+    <section id="examples" class="py-16 sm:py-24 border-t border-white/5">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-2xl mx-auto mb-10">
+                <span class="text-amber-400 font-semibold text-sm uppercase tracking-widest">Сравнение качества</span>
+                <h2 class="font-display font-extrabold text-3xl sm:text-4xl text-white mt-2 mb-4">
+                    Потяни ползунок «До / После»
+                </h2>
+                <p class="text-slate-400 text-sm sm:text-base">
+                    Сохраняем твои реальные черты, взгляд и мимику. Меняем только свет, одежду, детализацию и атмосферу кадра.
+                </p>
+            </div>
+
+            <!-- Контейнер слайдера -->
+            <div class="max-w-4xl mx-auto">
+                <div id="ba-container" class="relative w-full aspect-[4/3] sm:aspect-[16/10] rounded-3xl overflow-hidden border border-white/15 bg-surface shadow-2xl no-select cursor-ew-resize touch-none">
+                    
+                    <!-- Слой ПОСЛЕ (Студийное нейрофото) -->
+                    <div class="absolute inset-0 w-full h-full">
+                        <img id="ba-after-img"
+                             src="https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=1200&q=85"
+                             onerror="this.onerror=null; this.src='https://placehold.co/1200x750/131317/F59E0B?text=ПОСЛЕ:+Студийное+нейрофото';"
+                             alt="После: Студийное нейрофото"
+                             class="w-full h-full object-cover object-top">
+                        <div class="absolute inset-0 bg-gradient-to-t from-obsidian/60 via-transparent to-transparent pointer-events-none"></div>
+                        <span class="absolute top-4 right-4 sm:top-6 sm:right-6 px-3.5 py-1.5 rounded-full bg-amber-500 text-obsidian font-bold text-xs sm:text-sm shadow-lg pointer-events-none">
+                            ПОСЛЕ: Нейрофото
+                        </span>
+                    </div>
+
+                    <!-- Слой ДО (Обычное селфи) -->
+                    <div id="ba-before-wrapper" class="absolute inset-0 w-1/2 h-full overflow-hidden border-r-2 border-amber-400">
+                        <img id="ba-before-img"
+                             src="https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=1200&q=85"
+                             onerror="this.onerror=null; this.src='https://placehold.co/1200x750/27272A/CBD5E1?text=ДО:+Обычное+селфи';"
+                             alt="До: Обычное селфи"
+                             class="absolute top-0 left-0 max-w-none h-full object-cover object-top filter saturate-50 contrast-90 brightness-95 sepia-[.18] blur-[0.5px]">
+                        <div class="absolute inset-0 bg-slate-900/20 pointer-events-none"></div>
+                        <span class="absolute top-4 left-4 sm:top-6 sm:left-6 px-3.5 py-1.5 rounded-full bg-obsidian/80 backdrop-blur-md border border-white/20 text-slate-200 font-semibold text-xs sm:text-sm shadow-lg whitespace-nowrap pointer-events-none">
+                            ДО: Обычное селфи
+                        </span>
+                    </div>
+
+                    <!-- Ручка ползунка -->
+                    <div id="ba-handle" class="absolute top-0 bottom-0 left-1/2 -translate-x-1/2 flex items-center justify-center pointer-events-none z-20">
+                        <div class="w-11 h-11 sm:w-12 sm:h-12 rounded-full bg-amber-500 text-obsidian shadow-2xl shadow-black/80 border-4 border-obsidian flex items-center justify-center">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M8 9l-4 3 4 3m8-6l4 3-4 3"/>
+                            </svg>
+                        </div>
+                    </div>
+
+                    <!-- Подсказка внизу -->
+                    <div class="absolute bottom-4 left-4 right-4 sm:bottom-6 sm:left-6 sm:right-6 flex items-center justify-between pointer-events-none z-10">
+                        <span class="px-4 py-2 rounded-xl bg-obsidian/75 backdrop-blur-md border border-white/10 text-xs sm:text-sm text-slate-200">
+                            <strong class="text-amber-400">Результат:</strong> Естественная кожа, студийный свет и 100% узнаваемость
+                        </span>
+                        <span class="hidden sm:inline-block px-3 py-1.5 rounded-xl bg-obsidian/75 backdrop-blur-md border border-white/10 text-xs text-slate-400">
+                            ← Двигай ползунок →
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== 4. ПОПУЛЯРНЫЕ ОБРАЗЫ / СТИЛИ ==================== -->
+    <section id="styles" class="py-16 sm:py-24 bg-surface/35 border-t border-white/5">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-12">
+                <div>
+                    <span class="text-amber-400 font-semibold text-sm uppercase tracking-widest">Каталог образов</span>
+                    <h2 class="font-display font-extrabold text-3xl sm:text-4xl text-white mt-2">
+                        Популярные стили
+                    </h2>
+                </div>
+                <p class="text-slate-400 text-sm sm:text-base max-w-md">
+                    Нажми на понравившиеся карточки — они автоматически добавятся в твой конструктор заявки ниже.
+                </p>
+            </div>
+
+            <!-- Сетка из 4 стилей (рендерится через JS для синхронизации с формой) -->
+            <div id="styles-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5"></div>
+        </div>
+    </section>
+
+    <!-- ==================== 5. ТАРИФЫ ==================== -->
+    <section id="pricing" class="py-16 sm:py-24 border-t border-white/5">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-2xl mx-auto mb-14">
+                <span class="text-amber-400 font-semibold text-sm uppercase tracking-widest">Прозрачные цены</span>
+                <h2 class="font-display font-extrabold text-3xl sm:text-4xl text-white mt-2 mb-4">
+                    Выбери свой тариф
+                </h2>
+                <p class="text-slate-400 text-sm sm:text-base">
+                    Нажми на тариф — он сразу подставится в конструктор заявки внизу страницы.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 items-stretch">
+                <!-- Тариф 1: Старт -->
+                <div class="flex flex-col p-7 sm:p-8 rounded-3xl bg-surface border border-white/10 hover:border-white/25 transition-all">
+                    <div class="mb-6">
+                        <h3 class="font-display font-bold text-xl text-white">Старт</h3>
+                        <p class="text-slate-400 text-sm mt-1">Идеально для новой аватарки и первого теста</p>
+                    </div>
+                    <div class="mb-6 pb-6 border-b border-white/10">
+                        <span class="font-display font-extrabold text-4xl text-white">500 ₽</span>
+                    </div>
+                    <ul class="space-y-3.5 text-sm text-slate-300 mb-8 flex-1">
+                        <li class="flex items-start gap-3">
+                            <svg class="w-5 h-5 text-amber-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                            <span><strong class="text-white">5 готовых фото</strong> в 1 выбранном стиле</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <svg class="w-5 h-5 text-amber-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                            <span>Готовность за 24 часа</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <svg class="w-5 h-5 text-amber-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                            <span>Идеально для аватарки в ВК и Telegram</span>
+                        </li>
+                    </ul>
+                    <button type="button" onclick="selectTariffAndScroll('Старт — 500 ₽')" class="w-full py-3.5 px-6 rounded-2xl bg-surfaceLight hover:bg-white/10 border border-white/15 text-white font-bold text-sm transition-all active:scale-95">
+                        Выбрать «Старт»
+                    </button>
+                </div>
+
+                <!-- Тариф 2: Хит (Самый популярный) -->
+                <div class="relative flex flex-col p-7 sm:p-8 rounded-3xl bg-gradient-to-b from-surfaceLight to-surface border-2 border-amber-500/85 shadow-2xl shadow-amber-500/15 lg:-translate-y-2">
+                    <div class="absolute -top-3.5 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full bg-amber-500 text-obsidian font-extrabold text-xs uppercase tracking-wider shadow-lg">
+                        Самый популярный
+                    </div>
+                    <div class="mb-6">
+                        <h3 class="font-display font-bold text-xl text-white">Хит</h3>
+                        <p class="text-amber-200/80 text-sm mt-1">Оптимальный выбор для соцсетей и подарка</p>
+                    </div>
+                    <div class="mb-6 pb-6 border-b border-white/10 flex items-baseline gap-3">
+                        <span class="font-display font-extrabold text-4xl text-white">1 200 ₽</span>
+                        <span class="text-sm text-slate-500 line-through">2 000 ₽</span>
+                    </div>
+                    <ul class="space-y-3.5 text-sm text-slate-200 mb-8 flex-1">
+                        <li class="flex items-start gap-3">
+                            <svg class="w-5 h-5 text-amber-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                            <span><strong class="text-white">15 готовых фото</strong> в 3 разных стилях</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <svg class="w-5 h-5 text-amber-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                            <span>Деликатная ретушь и ручной отбор</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <svg class="w-5 h-5 text-amber-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                            <span><strong class="text-amber-300">Приоритетная очередь</strong> на генерацию</span>
+                        </li>
+                    </ul>
+                    <button type="button" onclick="selectTariffAndScroll('Хит — 1 200 ₽')" class="w-full py-4 px-6 rounded-2xl bg-amber-500 hover:bg-amber-400 text-obsidian font-extrabold text-sm transition-all shadow-lg shadow-amber-500/25 active:scale-95">
+                        Выбрать «Хит»
+                    </button>
+                </div>
+
+                <!-- Тариф 3: Бизнес / Профи -->
+                <div class="flex flex-col p-7 sm:p-8 rounded-3xl bg-surface border border-violet-500/35 hover:border-violet-400/60 transition-all">
+                    <div class="mb-6">
+                        <h3 class="font-display font-bold text-xl text-white">Бизнес / Профи</h3>
+                        <p class="text-slate-400 text-sm mt-1">Максимум контента для экспертов и личного бренда</p>
+                    </div>
+                    <div class="mb-6 pb-6 border-b border-white/10">
+                        <span class="font-display font-extrabold text-4xl text-white">2 500 ₽</span>
+                    </div>
+                    <ul class="space-y-3.5 text-sm text-slate-300 mb-8 flex-1">
+                        <li class="flex items-start gap-3">
+                            <svg class="w-5 h-5 text-violet-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                            <span><strong class="text-white">30 готовых фото</strong> в 5 разных стилях</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <svg class="w-5 h-5 text-violet-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                            <span>Передача файлов-исходников в макс. качестве</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <svg class="w-5 h-5 text-violet-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                            <span>Индивидуальный подбор образов под нишу</span>
+                        </li>
+                    </ul>
+                    <button type="button" onclick="selectTariffAndScroll('Бизнес / Профи — 2 500 ₽')" class="w-full py-3.5 px-6 rounded-2xl bg-violet-500/15 hover:bg-violet-500/25 border border-violet-400/40 text-violet-200 font-bold text-sm transition-all active:scale-95">
+                        Выбрать «Бизнес / Профи»
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== 6. ИНТЕРАКТИВНЫЙ КОНСТРУКТОР ЗАЯВКИ ==================== -->
+    <section id="order" class="py-16 sm:py-24 bg-surface/35 border-t border-white/5">
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="rounded-3xl bg-surface border border-white/10 p-6 sm:p-10 lg:p-12 shadow-2xl">
+                <div class="text-center max-w-2xl mx-auto mb-10">
+                    <span class="text-amber-400 font-semibold text-sm uppercase tracking-widest">Быстрый заказ</span>
+                    <h2 class="font-display font-extrabold text-3xl sm:text-4xl text-white mt-2 mb-3">
+                        Конструктор заявки
+                    </h2>
+                    <p class="text-slate-400 text-sm sm:text-base">
+                        Собери параметры заказа, скопируй готовое сообщение и отправь его мне в личку ВКонтакте.
+                    </p>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+                    <!-- Левая колонка: Настройки -->
+                    <div class="lg:col-span-7 space-y-6">
+                        <!-- Выбор тарифа -->
+                        <div>
+                            <label for="order-tariff" class="block text-sm font-semibold text-slate-200 mb-2">1. Выберите тариф</label>
+                            <select id="order-tariff" class="w-full px-4 py-3.5 rounded-xl bg-obsidian border border-white/15 text-white text-sm font-medium focus:outline-none focus:border-amber-500 transition-colors">
+                                <option value="Старт — 500 ₽">Старт — 500 ₽ (5 фото в 1 стиле)</option>
+                                <option value="Хит — 1 200 ₽" selected>Хит — 1 200 ₽ (15 фото в 3 стилях) ★</option>
+                                <option value="Бизнес / Профи — 2 500 ₽">Бизнес / Профи — 2 500 ₽ (30 фото в 5 стилях)</option>
+                            </select>
+                        </div>
+
+                        <!-- Выбор стилей -->
+                        <div>
+                            <label class="block text-sm font-semibold text-slate-200 mb-2.5">2. Желаемые стили (можно несколько)</label>
+                            <div id="order-style-chips" class="flex flex-wrap gap-2"></div>
+                        </div>
+
+                        <!-- Имя и пожелания -->
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <label for="order-name" class="block text-sm font-semibold text-slate-200 mb-2">3. Ваше имя (необязательно)</label>
+                                <input type="text" id="order-name" placeholder="Например, Дмитрий" class="w-full px-4 py-3.5 rounded-xl bg-obsidian border border-white/15 text-white placeholder-slate-500 text-sm focus:outline-none focus:border-amber-500 transition-colors">
+                            </div>
+                            <div>
+                                <label for="order-wishes" class="block text-sm font-semibold text-slate-200 mb-2">4. Пожелания (необязательно)</label>
+                                <input type="text" id="order-wishes" placeholder="Например, в костюме или на закате" class="w-full px-4 py-3.5 rounded-xl bg-obsidian border border-white/15 text-white placeholder-slate-500 text-sm focus:outline-none focus:border-amber-500 transition-colors">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Правая колонка: Готовый текст + Кнопки -->
+                    <div class="lg:col-span-5 flex flex-col h-full bg-obsidian/80 border border-white/10 rounded-2xl p-5 sm:p-6">
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="text-xs font-semibold uppercase tracking-wider text-amber-400">Готовое сообщение</span>
+                            <span class="text-xs text-slate-500">Автозаполнение</span>
+                        </div>
+
+                        <textarea id="order-preview" readonly rows="6" class="w-full p-4 rounded-xl bg-surface border border-white/10 text-slate-200 text-sm leading-relaxed resize-none focus:outline-none mb-5"></textarea>
+
+                        <div class="space-y-3 mt-auto">
+                            <button type="button" id="copy-order-btn" class="w-full py-3.5 px-5 rounded-xl bg-surfaceLight hover:bg-white/10 border border-white/15 text-white font-semibold text-sm transition-all flex items-center justify-center gap-2 active:scale-95">
+                                <svg class="w-4 h-4 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+                                <span>Скопировать заявку</span>
+                            </button>
+
+                            <a href="https://vk.ru/vipbulich" target="_blank" rel="noopener noreferrer" class="w-full py-4 px-5 rounded-xl bg-amber-500 hover:bg-amber-400 text-obsidian font-extrabold text-sm transition-all flex items-center justify-center gap-2 shadow-lg shadow-amber-500/25 active:scale-95">
+                                <span>Отправить в ВК</span>
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== 7. ЧАСТЫЕ ВОПРОСЫ (FAQ) ==================== -->
+    <section id="faq" class="py-16 sm:py-24 border-t border-white/5">
+        <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12">
+                <span class="text-amber-400 font-semibold text-sm uppercase tracking-widest">FAQ</span>
+                <h2 class="font-display font-extrabold text-3xl sm:text-4xl text-white mt-2">
+                    Частые вопросы
+                </h2>
+            </div>
+
+            <div class="space-y-3" id="faq-list">
+                <!-- Вопрос 1 -->
+                <div class="faq-item rounded-2xl bg-surface border border-white/10 overflow-hidden">
+                    <button type="button" class="faq-trigger w-full px-6 py-5 text-left flex items-center justify-between gap-4 hover:bg-white/[0.02] transition-colors">
+                        <span class="font-display font-bold text-base sm:text-lg text-white">Сколько нужно исходных фото?</span>
+                        <svg class="faq-icon w-5 h-5 text-amber-400 shrink-0 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M19 9l-7 7-7-7"/></svg>
+                    </button>
+                    <div class="faq-content hidden px-6 pb-5 text-sm sm:text-base text-slate-400 leading-relaxed border-t border-white/5 pt-4">
+                        Достаточно 5–10 обычных четких фото с телефона: при хорошем освещении, с разных ракурсов (анфас и слегка вполоборота), без солнечных очков и других людей в кадре.
+                    </div>
+                </div>
+
+                <!-- Вопрос 2 -->
+                <div class="faq-item rounded-2xl bg-surface border border-white/10 overflow-hidden">
+                    <button type="button" class="faq-trigger w-full px-6 py-5 text-left flex items-center justify-between gap-4 hover:bg-white/[0.02] transition-colors">
+                        <span class="font-display font-bold text-base sm:text-lg text-white">Будет ли лицо реально похоже?</span>
+                        <svg class="faq-icon w-5 h-5 text-amber-400 shrink-0 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M19 9l-7 7-7-7"/></svg>
+                    </button>
+                    <div class="faq-content hidden px-6 pb-5 text-sm sm:text-base text-slate-400 leading-relaxed border-t border-white/5 pt-4">
+                        Да. Под каждого клиента обучается персональная нейромодель, которая запоминает геометрию лица, взгляд, прическу, бороду или очки. Каждый готовый кадр я проверяю вручную, чтобы исключить «пластиковость» и искажения.
+                    </div>
+                </div>
+
+                <!-- Вопрос 3 -->
+                <div class="faq-item rounded-2xl bg-surface border border-white/10 overflow-hidden">
+                    <button type="button" class="faq-trigger w-full px-6 py-5 text-left flex items-center justify-between gap-4 hover:bg-white/[0.02] transition-colors">
+                        <span class="font-display font-bold text-base sm:text-lg text-white">Сколько ждать готовые фото?</span>
+                        <svg class="faq-icon w-5 h-5 text-amber-400 shrink-0 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M19 9l-7 7-7-7"/></svg>
+                    </button>
+                    <div class="faq-content hidden px-6 pb-5 text-sm sm:text-base text-slate-400 leading-relaxed border-t border-white/5 pt-4">
+                        Стандартный срок — до 24 часов с момента получения исходников. На тарифе «Хит» и «Бизнес / Профи» заказ идет в приоритетной очереди и часто готов уже в течение нескольких часов.
+                    </div>
+                </div>
+
+                <!-- Вопрос 4 -->
+                <div class="faq-item rounded-2xl bg-surface border border-white/10 overflow-hidden">
+                    <button type="button" class="faq-trigger w-full px-6 py-5 text-left flex items-center justify-between gap-4 hover:bg-white/[0.02] transition-colors">
+                        <span class="font-display font-bold text-base sm:text-lg text-white">Как происходит оплата?</span>
+                        <svg class="faq-icon w-5 h-5 text-amber-400 shrink-0 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M19 9l-7 7-7-7"/></svg>
+                    </button>
+                    <div class="faq-content hidden px-6 pb-5 text-sm sm:text-base text-slate-400 leading-relaxed border-t border-white/5 pt-4">
+                        Удобным переводом по СБП на карту российского банка. Сначала мы обсуждаем детали и проверяем ваши исходные фото в ВК, после чего запускаем работу.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== 8. ФУТЕР ==================== -->
+    <footer class="border-t border-white/10 bg-obsidian py-10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col sm:flex-row items-center justify-between gap-6">
+                <div class="flex items-center gap-2.5">
+                    <span class="font-display font-extrabold text-lg tracking-wider text-white">НЕЙРО<span class="text-amber-400">КАДР</span></span>
+                    <span class="text-slate-600">•</span>
+                    <span class="text-xs sm:text-sm text-slate-400">© 2026 Все права защищены</span>
+                </div>
+
+                <a href="https://vk.ru/vipbulich" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-surface hover:bg-surfaceLight border border-white/10 text-sm font-semibold text-slate-200 hover:text-amber-400 transition-colors">
+                    <span>ВКонтакте: vk.ru/vipbulich</span>
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+                </a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- ==================== ЛОГИКА ИНТЕРАКТИВА (JS) ==================== -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // 1. Мобильное меню
+            const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+            const mobileMenu = document.getElementById('mobile-menu');
+            document.querySelectorAll('.mobile-nav-link').forEach(link => {
+                link.addEventListener('click', () => mobileMenu.classList.add('hidden'));
+            });
+            mobileMenuBtn.addEventListener('click', () => mobileMenu.classList.toggle('hidden'));
+
+            // 2. Интерактивный слайдер «До / После»
+            const baContainer = document.getElementById('ba-container');
+            const baBeforeWrapper = document.getElementById('ba-before-wrapper');
+            const baBeforeImg = document.getElementById('ba-before-img');
+            const baHandle = document.getElementById('ba-handle');
+            let isDragging = false;
+
+            function syncBeforeImgWidth() {
+                if (baContainer && baBeforeImg) {
+                    baBeforeImg.style.width = baContainer.offsetWidth + 'px';
+                }
+            }
+
+            function updateSlider(clientX) {
+                const rect = baContainer.getBoundingClientRect();
+                const percent = Math.max(2, Math.min(98, ((clientX - rect.left) / rect.width) * 100));
+                baBeforeWrapper.style.width = percent + '%';
+                baHandle.style.left = percent + '%';
+            }
+
+            baContainer.addEventListener('mousedown', (e) => { isDragging = true; updateSlider(e.clientX); });
+            window.addEventListener('mousemove', (e) => { if (isDragging) updateSlider(e.clientX); });
+            window.addEventListener('mouseup', () => { isDragging = false; });
+
+            baContainer.addEventListener('touchstart', (e) => { isDragging = true; updateSlider(e.touches[0].clientX); }, { passive: true });
+            window.addEventListener('touchmove', (e) => { if (isDragging) updateSlider(e.touches[0].clientX); }, { passive: true });
+            window.addEventListener('touchend', () => { isDragging = false; });
+
+            window.addEventListener('resize', syncBeforeImgWidth);
+            syncBeforeImgWidth();
+
+            // 3. Каталог из 4 стилей + синхронизация с конструктором заявки
+            const stylesList = [
+                {
+                    name: 'Деловой портрет',
+                    desc: 'Костюм, панорамный офис или студийный свет для экспертов, соцсетей и резюме.',
+                    img: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=600&q=80'
+                },
+                {
+                    name: 'Кино и улица',
+                    desc: 'Вечерний город, неон, авто, кожаная куртка и глубокий кинематографичный цвет.',
+                    img: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&w=600&q=80'
+                },
+                {
+                    name: 'Эстетика 90-х / Ретро',
+                    desc: 'Теплое пленочное зерно, винтажные образы и атмосферная ностальгия.',
+                    img: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=600&q=80'
+                },
+                {
+                    name: 'Подарочный / Фэнтези',
+                    desc: 'Эффектные киногерои, киберпанк, исторические и сказочные образы в подарок.',
+                    img: 'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=600&q=80'
+                }
+            ];
+
+            const selectedStyles = new Set(['Деловой портрет']);
+            const stylesGrid = document.getElementById('styles-grid');
+            const orderStyleChips = document.getElementById('order-style-chips');
+            const tariffSelect = document.getElementById('order-tariff');
+            const nameInput = document.getElementById('order-name');
+            const wishesInput = document.getElementById('order-wishes');
+            const orderPreview = document.getElementById('order-preview');
+
+            function renderStyles() {
+                stylesGrid.innerHTML = stylesList.map(style => {
+                    const active = selectedStyles.has(style.name);
+                    return `
+                        <button type="button" data-style="${style.name}" class="style-toggle group text-left rounded-3xl overflow-hidden bg-surface border transition-all duration-200 ${active ? 'border-amber-500 ring-2 ring-amber-500/30 shadow-xl shadow-amber-500/10' : 'border-white/10 hover:border-white/25'}">
+                            <div class="relative h-52 w-full overflow-hidden bg-obsidian">
+                                <img src="${style.img}"
+                                     onerror="this.onerror=null; this.src='https://placehold.co/600x400/131317/F59E0B?text=${encodeURIComponent(style.name)}';"
+                                     alt="${style.name}"
+                                     class="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-500">
+                                <div class="absolute inset-0 bg-gradient-to-t from-surface via-surface/20 to-transparent"></div>
+                                <span class="absolute top-3.5 right-3.5 px-3 py-1 rounded-full text-xs font-bold backdrop-blur-md ${active ? 'bg-amber-500 text-obsidian' : 'bg-obsidian/70 text-slate-300 border border-white/15'}">
+                                    ${active ? '✓ Выбрано' : '+ Выбрать'}
+                                </span>
+                            </div>
+                            <div class="p-5">
+                                <h3 class="font-display font-bold text-lg text-white mb-1.5 group-hover:text-amber-300 transition-colors">${style.name}</h3>
+                                <p class="text-xs sm:text-sm text-slate-400 leading-relaxed">${style.desc}</p>
+                            </div>
+                        </button>
+                    `;
+                }).join('');
+
+                orderStyleChips.innerHTML = stylesList.map(style => {
+                    const active = selectedStyles.has(style.name);
+                    return `
+                        <button type="button" data-style="${style.name}" class="style-toggle px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all border ${active ? 'bg-amber-500/20 border-amber-500 text-amber-300' : 'bg-obsidian border-white/15 text-slate-400 hover:text-white hover:border-white/30'}">
+                            ${active ? '✓ ' : '+ '}${style.name}
+                        </button>
+                    `;
+                }).join('');
+
+                document.querySelectorAll('.style-toggle').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        const name = btn.getAttribute('data-style');
+                        if (selectedStyles.has(name)) {
+                            selectedStyles.delete(name);
+                        } else {
+                            selectedStyles.add(name);
+                        }
+                        renderStyles();
+                        updatePreview();
+                    });
+                });
+            }
+
+            // 4. Формирование текста заявки
+            function updatePreview() {
+                const tariff = tariffSelect.value;
+                const stylesArr = Array.from(selectedStyles);
+                const stylesText = stylesArr.length > 0 ? stylesArr.join(', ') : 'поможете подобрать';
+                const name = nameInput.value.trim();
+                const wishes = wishesInput.value.trim();
+
+                let text = `Привет! Хочу заказать нейрофотосессию в НЕЙРОКАДР.\n`;
+                text += `Тариф: ${tariff}\n`;
+                text += `Стили: ${stylesText}\n`;
+                if (name) text += `Имя: ${name}\n`;
+                if (wishes) text += `Пожелания: ${wishes}\n`;
+                text += `Готов(а) скинуть исходные фото!`;
+
+                orderPreview.value = text;
+            }
+
+            tariffSelect.addEventListener('change', updatePreview);
+            nameInput.addEventListener('input', updatePreview);
+            wishesInput.addEventListener('input', updatePreview);
+
+            window.selectTariffAndScroll = function(tariffVal) {
+                tariffSelect.value = tariffVal;
+                updatePreview();
+                document.getElementById('order').scrollIntoView({ behavior: 'smooth' });
+                showToast(`Выбран тариф «${tariffVal}»`);
+            };
+
+            // 5. Копирование заявки
+            document.getElementById('copy-order-btn').addEventListener('click', () => {
+                try {
+                    orderPreview.select();
+                    orderPreview.setSelectionRange(0, 99999);
+                    document.execCommand('copy');
+                    window.getSelection().removeAllRanges();
+                    showToast('Скопировано! Теперь нажми «Отправить в ВК».');
+                } catch (e) {
+                    showToast('Выделите текст и скопируйте вручную.');
+                }
+            });
+
+            // 6. Уведомление (Toast)
+            let toastTimer;
+            function showToast(msg) {
+                const toast = document.getElementById('toast');
+                document.getElementById('toast-message').textContent = msg;
+                toast.classList.remove('translate-y-24', 'opacity-0');
+                clearTimeout(toastTimer);
+                toastTimer = setTimeout(() => {
+                    toast.classList.add('translate-y-24', 'opacity-0');
+                }, 3000);
+            }
+
+            // 7. FAQ Аккордеон
+            document.querySelectorAll('.faq-item').forEach(item => {
+                const trigger = item.querySelector('.faq-trigger');
+                const content = item.querySelector('.faq-content');
+                const icon = item.querySelector('.faq-icon');
+
+                trigger.addEventListener('click', () => {
+                    const isOpen = !content.classList.contains('hidden');
+                    document.querySelectorAll('.faq-item').forEach(other => {
+                        other.querySelector('.faq-content').classList.add('hidden');
+                        other.querySelector('.faq-icon').classList.remove('rotate-180');
+                    });
+                    if (!isOpen) {
+                        content.classList.remove('hidden');
+                        icon.classList.add('rotate-180');
+                    }
+                });
+            });
+
+            // Инициализация
+            renderStyles();
+            updatePreview();
+        });
+    </script>
+</body>
+</html>
